@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class HandInHandAppConfig(AppConfig):
+class RecipientAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'hand_in_hand_app'
+    name = 'recipient_app'
