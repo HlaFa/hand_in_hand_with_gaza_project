@@ -1,11 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>recipienttttttttttt</h1>
-</body>
-</html>
+{% extends "base_dashboard.html" %}
+
+{% block title %}Recipient Dashboard{% endblock %}
+
+{% block content %}
+  <h2 class="text-success">Recipient Dashboard</h2>
+
+  <!-- Case submission form -->
+  <div class="card p-4 mb-4 shadow-sm">
+    <h5>Submit a New Case</h5>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-success">Submit Case</button>
+    </form>
+  </div>
+
+  <!-- List recipient's cases -->
+  <h4>My Cases</h4>
+  {% for case in my_cases %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ case.category.name }}</h5>
+        <p>{{ case.description }}</p>
+        <p><strong>Amount Needed:</strong> ${{ case.price }}</p>
+        <p>Status: 
+          <span class="badge {% if case.status == 'pending' %}bg-warning{% elif case.status == 'Approved' %}bg-success{% else %}bg-secondary{% endif %}">
+            {{ case.status }}
+          </span>
+        </p>
+      </div>
+    </div>
+  {% empty %}
+    <p>You haven’t submitted any cases yet.</p>
+  {% endfor %}
+{% endblock %}

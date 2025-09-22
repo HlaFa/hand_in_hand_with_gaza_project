@@ -8,5 +8,5 @@ urlpatterns = [
     path('login/submit', views.login_submit, name='login_submit'),
     path('register/', views.register_template, name='register_template'), 
     path('register/submit', views.register_submit, name='register_submit'),
-
+    path('logout/', views.logout, name='logout'),
     ]

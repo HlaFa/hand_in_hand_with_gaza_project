@@ -72,3 +72,8 @@ def register_submit(request):
         form = RegisterForm()
 
     return render(request, "signup.html", {"form": form})
+# /////////////////////////////////////////////////logout///////////////////////////////
+def logout(request):
+    request.session.flush()
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('login_registration_app:login_template')

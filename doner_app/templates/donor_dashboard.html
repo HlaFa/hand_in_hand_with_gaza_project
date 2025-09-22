@@ -1,11 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>donnner</h1>
-</body>
-</html>
+{% extends "base_dashboard.html" %}
+
+{% block title %}Donor Dashboard{% endblock %}
+
+{% block content %}
+  <h2 class="text-primary">Available Cases</h2>
+
+  {% for case in cases %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ case.category.name }}</h5>
+        <p>{{ case.description }}</p>
+        <p><strong>Amount Needed:</strong> ${{ case.price }}</p>
+
+        <p class="text-muted">Attachments:</p>
+        <ul>
+          {% for att in case.case_attachments.all %}
+            {% if att.status == "approved" %}
+              <li><a href="{{ att.file_path }}" target="_blank">Proof File</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        <button class="btn btn-success">Donate</button>
+      </div>
+    </div>
+  {% empty %}
+    <p>No verified cases available right now.</p>
+  {% endfor %}
+{% endblock %}
