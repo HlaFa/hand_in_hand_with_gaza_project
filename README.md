@@ -26,17 +26,21 @@ Track donation status.
 Admin: Full CRUD on all cases and categories.
 Recipient: CRUD only on their own cases.
 Donor: Read-only access to cases & categories.
+
 📎 Attachments
 Recipients upload documents/images for cases.
 Admin approves/rejects attachments.
+
 🔐 Authentication & Security
 Secure registration and login with hashed passwords.
 Form validation on both frontend and backend.
 Session-based authentication for role-based redirects.
+
 📱 Responsive UI
 Material-UI for buttons, dialogs, and alerts.
 Bootstrap 5 for layouts, navigation, and responsiveness.
 Optimized for desktop, tablet, and mobile devices.
+
 🖥️ Tech Stack
 Backend: Django, Python
 Frontend: Bootstrap 5, Material-UI, CSS, JS
