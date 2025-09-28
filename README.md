@@ -8,20 +8,16 @@ The website provides role-based access for donors, recipients, and administrator
 👥 User Roles & Permissions
 
 1. Admin
-
 Manage all users, cases, donations, categories, and attachments.
 Approve/reject attachments.
-
 2. Donor
-
 Browse cases and donate.
 View donation history.
-
 3. Recipient
-
 Create and manage personal cases.
 Upload and manage attachments.
 Track donation status.
+
 🛠️ CRUD Operations
 Admin: Full CRUD on all cases and categories.
 Recipient: CRUD only on their own cases.
