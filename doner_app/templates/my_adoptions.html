@@ -1,0 +1,23 @@
+{% extends "base_dashboard.html" %}
+{% block title %}My Adoptions{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold primary_color mb-4">My Adoptions</h2>
+
+  {% if adoptions %}
+    {% for adoption in adoptions %}
+      <div class="card shadow-sm border-0 rounded-4 mb-3">
+        <div class="card-body">
+          <h5 class="fw-bold">{{ adoption.case.category.name }}</h5>
+          <p class="mb-1"><strong>Case:</strong> {{ adoption.case.description }}</p>
+          <p class="mb-1"><strong>Amount Donated:</strong> ${{ adoption.amount }}</p>
+          <p class="mb-1"><strong>Status:</strong> {{ adoption.case.status }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info">You haven’t made any adoptions yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

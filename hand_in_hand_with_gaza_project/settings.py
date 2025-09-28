@@ -9,11 +9,28 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import environ
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+print(">>> DEBUG LOADED EMAIL =", env("EMAIL_HOST_USER", default="NOT FOUND"))
+
+
+
+REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [REDIS_URL]},
+    }
+}
+# Now you can use env("VAR_NAME")
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,9 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login_registration_app',
-     'recipient_app',
-     'doner_app'
-    
+    'recipient_app.apps.RecipientAppConfig',  # use config so signals load
+    'doner_app',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -70,11 +87,27 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'hand_in_hand_with_gaza_project.wsgi.application'
+# WSGI_APPLICATION = 'hand_in_hand_with_gaza_project.wsgi.application'
 
+ASGI_APPLICATION = "hand_in_hand_with_gaza_project.asgi.application"
+
+# # Redis backend for Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
 
 DATABASES = {
     'default': {
@@ -122,10 +155,17 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",   
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ADMIN_EMAIL = env("ADMIN_EMAIL", default="hlafa178@gmail.com")

@@ -1,30 +1,53 @@
 {% extends "base_dashboard.html" %}
+{% load static %}
 
 {% block title %}Donor Dashboard{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
 {% block content %}
-  <h2 class="text-primary">Available Cases</h2>
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold primary_color">🤝 Available Cases</h2>
+    <p class="text-muted">Browse cases submitted by families in need and choose the one you’d like to support.</p>
+  </div>
 
-  {% for case in cases %}
-    <div class="card mb-3 shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">{{ case.category.name }}</h5>
-        <p>{{ case.description }}</p>
-        <p><strong>Amount Needed:</strong> ${{ case.price }}</p>
+  <div class="row g-4">
+    {% for case in cases %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
+        <div class="card-body d-flex flex-column">
 
-        <p class="text-muted">Attachments:</p>
-        <ul>
-          {% for att in case.case_attachments.all %}
-            {% if att.status == "approved" %}
-              <li><a href="{{ att.file_path }}" target="_blank">Proof File</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+          <div class="mb-3">
+            <p class="fw-bold primary_color">{{ case.category.name }}</p>
+          </div>
 
-        <button class="btn btn-success">Donate</button>
+          <h5 class="card-title text-dark fw-semibold">{{ case.description|truncatechars:70 }}</h5>
+
+          <div class="mt-3 mb-3">
+            <p class="mb-1"><strong>Needed:</strong> ${{ case.price }}</p>
+          </div>
+
+          <a href="{% url 'donor_app:case_detail' case.id %}" class="btn btn-logout w-100">
+            View Details
+          </a>
+        </div>
       </div>
     </div>
-  {% empty %}
-    <p>No verified cases available right now.</p>
-  {% endfor %}
+    {% empty %}
+    <div class="col-12 text-center">
+      <p class="text-muted fst-italic">No approved cases available right now. Please check back later.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<style>
+  .hover-shadow:hover {
+    transform: translateY(-4px);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+  }
+</style>
 {% endblock %}

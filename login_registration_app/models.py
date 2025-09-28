@@ -40,26 +40,28 @@ class Category(models.Model):
 class Case(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),
-        ('Approved', 'Approved'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
         ('delivered', 'Delivered'),
     )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name="category_cases")
- 
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_cases")
+
     def __str__(self):
         return f"Case {self.id} - {self.status}"
- 
+
 # -------------------------
 # Adoptions
 # -------------------------
 class Adoption(models.Model):
     donor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='donations')
-    case = models.ForeignKey(Case, on_delete=models.CASCADE,related_name="case_adoptions")
+    case = models.ForeignKey(Case, on_delete=models.CASCADE,related_name="adoptions")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
  
     def __str__(self):
@@ -75,7 +77,8 @@ class Attachment(models.Model):
         ('rejected', 'Rejected'),
     )
     case = models.ForeignKey(Case, on_delete=models.CASCADE,related_name="case_attachments")
-    file_path = models.CharField(max_length=255)
+    # file_path = models.CharField(max_length=255)
+    file = models.FileField(upload_to="attachments/",null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_attachments")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -83,3 +86,6 @@ class Attachment(models.Model):
  
     def __str__(self):
         return f"Attachment {self.id} for Case {self.case.id}"
+    
+    
+

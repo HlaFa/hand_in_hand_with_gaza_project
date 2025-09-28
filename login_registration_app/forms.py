@@ -103,3 +103,50 @@ class LoginForm(forms.Form):
         cleaned['email'] = (cleaned.get('email') or '').strip().lower()
         cleaned['password'] = (cleaned.get('password') or '').strip()
         return cleaned
+
+class ProfileEditForm(forms.ModelForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+        validators=[validate_custom_email]
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'link_watsapp', 'dob', 'phone',
+            'national_id', 'email'
+        ]
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'link_watsapp': forms.URLInput(attrs={'class': 'form-control'}),
+            'dob': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'phone': forms.NumberInput(attrs={'class': 'form-control'}),
+            'national_id': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_email(self):
+        email = (self.cleaned_data.get('email') or '').strip().lower()
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise ValidationError("This email is already registered.")
+        return email
+
+    def clean_national_id(self):
+        national_id = self.cleaned_data.get("national_id", "").strip()
+        if not re.match(r'^\d{9}$', national_id):
+            raise ValidationError("National ID must be exactly 9 digits.")
+        return national_id
+
+    def clean_dob(self):
+        dob = self.cleaned_data.get("dob")
+        if not dob:
+            return dob
+
+        today = date.today()
+        if dob > today:
+            raise ValidationError("Date of birth cannot be in the future.")
+
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        if age < 12:
+            raise ValidationError("You must be at least 12 years old to register.")
+        return dob    
